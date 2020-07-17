@@ -1,0 +1,22 @@
+#Script to read in USDA psd files for coffee, which are published twice a year and put them into a useable df format
+library(readxl)
+
+#url for coffee psd
+url <- "https://apps.fas.usda.gov/psdonline/downloads/psd_coffee_csv.zip"
+
+#gets zipfile and downloads to temporary folder
+temp <- tempfile()
+download.file(url, temp)
+
+#grabs date that the file was retrieved
+date_stamp <- Sys.Date()
+
+
+store_dir <- file.path("X:",# drive letter
+                       "R", 
+                       "usdaPSD", 
+                       "USDA_PSD", 
+                       date_stamp)
+
+#unzips the file and stores in the store_dir path
+unzip(zipfile = temp, exdir = store_dir)
