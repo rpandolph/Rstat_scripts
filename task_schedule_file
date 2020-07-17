@@ -1,0 +1,4 @@
+
+#short script that is saved as a batch file that can then be used in windows task scheduler.
+@echo off
+"X:\Program Files\R\R-3.6.3\bin\R.exe" CMD BATCH "Y:\Main\R\usdaPSD\USDA_PSD.R"
