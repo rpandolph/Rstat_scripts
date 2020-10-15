@@ -3,15 +3,6 @@ library(tidyverse)
 library(readxl) 
 library(writexl)
 
-#excel original cleaned to rid file of the table of contents
-#also to delete rows with data downloaded and link back to the TOC. All else same
-read_excel_allsheets <- function(filename, tibble = FALSE) {
-  sheets <- readxl::excel_sheets(filename)
-  x <- lapply(sheets, function(X) readxl::read_excel(filename, sheet = X, col_names = FALSE, skip = 1))
-  if(!tibble) x <- lapply(x, as.data.frame)
-  names(x) <- sheets
-  x
-}
 
 #function to minimize input for recoding ISO codes in gsub
 recode_ptCode <- function(x, original, replace) {
@@ -30,37 +21,13 @@ exp_df_list_excel <- function(x, path, endname = ".xlsx"){
 }
 
 
-
-workbook_location <- "C:/Users/TRAVEL/Documents/R/raw_data/k15805264_toc_removed.xlsx"
-
 #import data workbook and excel file with ISO labels
-EU_data <- read_excel_allsheets(workbook_location)
-ico_Country <- read_excel("R/raw_data/ico_Country_Codes_Names.xlsx")
-
-#pulls out info from header section of each work sheet (partner name, hscode, flow type and unit)
-#then removes the header rows
-EU_data_cleaned <- lapply(EU_data, function(x) transform(x, flow = x[1,2])) %>% 
-  lapply(function(x) transform(x, unit = x[2,2])) %>% 
-    lapply(function(x) transform(x, period = x[3,2])) %>% 
-      lapply(function(x) transform(x, hsCode = x[4,2])) %>% 
-        lapply(function(x) subset(x[-c(1:5), ]))
+workbook_location <- "D:/documents/R/eurostat/k16105648/data-16105648.csv"
+EU_data <- read.csv(workbook_location)
 
 
-#get new column names to replace all
-x<- as.character(EU_data_cleaned$`k15805264.xlsx 1`[1, c(1:228)])
-y<- c("flow", "unit", "period", "hsCode")
-columns <- c(x, y)
-
-#set names using columns vector then remove first row
-EU_named<- lapply(EU_data_cleaned, setNames, columns) %>% 
-#remove first row with column names
-lapply( function(x) subset(x[-1, ]))
-
-#pivot data frames so monthly data moved from wide to long, then bind rows for one data frame
-EU_tidied<- lapply(EU_named, function(x) pivot_longer(x, cols = c(2:228), names_to = "partner"))
 
 
-eu_df <- bind_rows(EU_tidied)
 
 #pivot wider to put volume/value in same row
 eu_df2 <- eu_df %>% 
