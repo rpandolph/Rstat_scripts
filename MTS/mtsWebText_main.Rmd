@@ -1,0 +1,144 @@
+---
+title: "MTS Text Summary"
+author: "Stats Section"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+
+```{r set_variables,  include=FALSE}
+#This section sets variables by user
+#file name to be appended onto the full path. Changes each month
+changed_path <- "0120s.xlsx"
+#the following are the coffee years for the different langauges, this would be updated once a year when the first MTS for the coffee year goes out
+CY <- "Oct/19 to Sept/20"
+CYF <- "octobre/19 à septembre/20"
+CYC <- "octubre/19 a septiembre/20"
+CYP <-"outubro/19 a setembro/20"
+
+#declare coffee years (needs to be changed manually for now)
+coffee_year_current <- '2019/20'
+coffee_year_yoy <- '2018/19'
+
+```
+
+
+```{r get_MTs_data,  include=FALSE}
+#This is the path where the current year's MTS files are stored. Usually does not change
+static_path <- "D:\\documents\\R\\MTS\\MTS-"
+full_path <- paste0(static_path, changed_path)
+  #"G:/Economics & Stats/Statistics/Active/MTS/Monthly Trade Stats/Excel/MTS-"
+  
+#import file into R
+MTS <- readxl::read_excel(path = full_path)
+
+#pulls month from the file for English language(possibly automate further using sysDate?)
+month <-strsplit((as.character(MTS[3, 1])), split = " ")
+monE <- stringr::str_to_sentence(month[[1]][1])
+
+#get years for use in the text (current and one year before)
+#There is a lag between the current date and the dates referenced in the text 
+date_current <- as.numeric(format(Sys.Date()-59, "%Y"))
+date_yoy <- date_current-1
+
+#create lookup table for month names in other languages
+language_months <- data.frame("english" =c("January", 
+                                            "February", 
+                                            "March", 
+                                            "April", 
+                                            "May", 
+                                            "June",
+                                            "July", 
+                                            "August", 
+                                            "September",
+                                            "October", 
+                                            "November",  
+                                            "December"), 
+                               "french" =c("janvier",
+                                           "février",
+                                           "mars",
+                                           "avril",
+                                           "mai",
+                                           "juin",
+                                           "juillet",
+                                           "août",
+                                           "septembre",
+                                           "octobre",
+                                           "novembre",
+                                           "décembre"), 
+                            "spanish" = c("enero",
+                                          "febrero",
+                                          "marzo",
+                                          "abril",
+                                          "mayo",
+                                          "junio",
+                                          "julio",
+                                          "agosto",
+                                          "septiembre",
+                                          "octubre",
+                                          "noviembre",
+                                          "diciembre"), 
+                            "portuguese" = c("janeiro",
+                                             "fevereiro",
+                                             "marcha",
+                                             "abril",
+                                             "maio",
+                                             "junho",
+                                             "julho",
+                                             "agosto",
+                                             "setembro",
+                                             "outubro",
+                                             "novembro",
+                                             "dezembro"), stringsAsFactors = FALSE)
+
+
+#associate English months with foreign language month
+monF <- language_months$french[language_months$english == monE]
+monC <- language_months$spanish[language_months$english == monE]
+monP <- language_months$portuguese[language_months$english == monE]
+
+#create df that associates full month name with number to calculate year to date
+coffee_year_months <-
+  data.frame(
+    "month" = c(
+      "October",
+      "November",
+      "December",
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September"
+    ),
+    "number_m" = c(1, 
+                   2, 
+                   3, 
+                   4, 
+                   5, 
+                   6, 
+                   7, 
+                   8, 
+                   9, 
+                   10, 
+                   11, 
+                   12))
+X <- coffee_year_months$number_m[coffee_year_months$month == monE]
+
+#set whether to execute later code chuncks
+do_3 <- monE != "October" & monE != "September"
+```
+
+
+```{r get_child,  child=if(do_3) 'child_mts_3col.Rmd' else 'child_mts_2col.Rmd'}
+
+```

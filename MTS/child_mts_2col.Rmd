@@ -1,0 +1,54 @@
+
+
+```{r process_MTs_2columns, include=FALSE}
+#just september and october do this
+#The following uses the file to get the different variables. If the source file format changes then the code will not work. 
+
+MTS_clean <- MTS[is.na(MTS$...2), -c(2, 4, 6) ]
+colnames(MTS_clean) <- c("country", "current_month", "current_12", "last_month",  "last_12")
+keep_rows <- c("TOTAL", "Colombian Milds", "Other Milds", "Brazilian Naturals", "Robustas")
+MTS_clean <- MTS_clean[MTS_clean$country %in% keep_rows, ]%>% 
+  mutate_at(c(2:5), as.numeric)%>% 
+  mutate_if(is.numeric, function(x, na.rm=FALSE) round((x/1000000), digits = 2))
+
+#add Arabica total
+Arabicas <- cbind(country ="Arabicas", MTS_clean[2:4, ]%>%
+  summarise_if(is.numeric, funs(sum)))
+
+MTS_summary <- MTS_clean[c(1, 5), ] %>% 
+  rbind(Arabicas)
+
+#English variables
+v1 = MTS_summary[1, 2]
+v2 = MTS_summary[1, 4]
+v5 = MTS_summary[3, 3]
+v6 = MTS_summary[3, 5]
+v7 = MTS_summary[2, 3]
+v8 = MTS_summary[2, 5]
+
+
+#change MTS_summary for languages(decimal to comma) then set up variables
+MTS_summary_languages <- MTS_summary %>%
+  mutate_if(is.numeric, format, decimal.mark = ",")
+
+v1a = MTS_summary_languages[1, 2]
+v2a = MTS_summary_languages[1, 4]
+v5a = MTS_summary_languages[3, 3]
+v6a = MTS_summary_languages[3, 5]
+v7a = MTS_summary_languages[2, 3]
+v8a = MTS_summary_languages[2, 5]
+
+```
+
+
+World coffee exports amounted to `r v1` million bags in `r monE` `r date_current`, compared with `r v2` million in `r monE` `r date_yoy`.  In the twelve months ending `r monE` `r date_current`, exports of Arabica totalled `r v5` million bags compared to `r v6` million bags last year; whereas Robusta exports amounted to `r v7` million bags compared to `r v8` million bags. 
+
+Les exportations mondiales de café se sont élevées à `r v1a` millions de sacs en `r monF` `r date_current` par rapport aux `r v2a` millions de sacs exportés en `r monF` `r date_yoy`. Fin `r monF` `r date_current`, les exportations d’Arabica au cours des 12 mois écoulés s’élevaient à `r v5a` millions de sacs par rapport aux `r v6a` millions de sacs exportés l’année dernière. Les exportations de Robusta se sont quant à elles établies à `r v7a` millions de sacs par rapport aux `r v8a` millions de sacs de l’année dernière. 
+
+
+Las exportaciones mundiales de café se cifraron en `r v1a` millones de sacos en `r monC` de `r date_current` en comparación con los `r v2a` millones de sacos correspondientes a `r monC` de `r date_yoy`. Las exportaciones de Arábica en el período de 12 meses que acabó en `r monC` de `r date_current` se cifraron en `r v5a` millones de sacos, en comparación con `r v6a` millones de sacos el año pasado, mientras que las exportaciones de Robusta se cifraron en `r v7a` millones de sacos, en comparación con `r v8a` millones de sacos. 
+
+
+As exportações mundiais de café totalizaram `r v1a`milhões de sacas em `r monP` de `r date_current`, ante `r v2a` milhões em `r monP` de `r date_yoy`. As exportações de Arábica no período de 12 meses que acabou em `r monP` `r date_current`, totalizaram `r v5a` milhões de sacas, ante `r v6a` milhões no ano anterior, e as de Robusta passaram a `r v7a` milhões, de `r v8a` milhões de sacas.
+
+
