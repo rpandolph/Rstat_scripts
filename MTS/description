@@ -1,0 +1,4 @@
+This folder houses an R markdown file with 2 child markdown files. In addition there are 2 excel files that are used in the script.
+The purupose of the script to generate a summary paragraph about the excel files in 4 languages to be posed on our website at the same time that the excel files are sent to subscribers.
+The excel format changes for September and October which also changes the accompanying text. So the main scrip is used to generate the text and
+calls in the appropriate child markdown file using a if else statement. 
