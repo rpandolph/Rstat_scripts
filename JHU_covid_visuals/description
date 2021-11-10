@@ -1,0 +1,1 @@
+This folder contains the R script to take data from the JHU data published on github, clean it and then use it to create visualizations. The visualizations map the number of cases, deaths and recovery to a world map. 
