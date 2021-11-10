@@ -1,0 +1,1 @@
+This folder contains two R scripts. The first uses the api from the US census bureau to get US trade data for coffee. The second script takes the data and prepares it to be uploaded to a database. T
